@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon backend/server",
     "client": "npm run start --prefix frontend",
+    "server": "nodemon backend/server",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "keywords": [],
