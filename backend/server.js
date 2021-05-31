@@ -1,7 +1,6 @@
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
-const socket = require("socket.io");
 const xss = require("xss");
 
 const app = express();
@@ -10,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 const server = http.createServer(app);
-const io = socket(server);
+const io = require("socket.io")(server);
 
 const sanitizeString = (str) => {
   return xss(str);
@@ -25,8 +24,8 @@ io.on("connection", (socket) => {
     if (connections[path] === undefined) {
       connections[path] = [];
     }
-
     connections[path].push(socket.id);
+
     timeOnline[socket.id] = new Date();
 
     for (let i = 0; i < connections[path].length; i++) {
@@ -36,6 +35,7 @@ io.on("connection", (socket) => {
         connections[path]
       );
     }
+
     if (messages[path] !== undefined) {
       for (let i = 0; i < messages[path].length; i++) {
         io.to(socket.id).emit(
@@ -106,8 +106,6 @@ io.on("connection", (socket) => {
 
           var index = connections[key].indexOf(socket.id);
           connections[key].splice(index, 1);
-
-          console.log(key, socket.id, Math.ceil(diffTime / 1000));
 
           if (connections[key].length === 0) {
             delete connections[key];
